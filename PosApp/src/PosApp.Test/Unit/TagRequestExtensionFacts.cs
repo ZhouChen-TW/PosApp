@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using PosApp.Domain;
 using PosApp.Dtos.Requests;
 using Xunit;

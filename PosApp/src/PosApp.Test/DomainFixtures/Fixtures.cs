@@ -7,8 +7,10 @@ namespace PosApp.Test.DomainFixtures
         public Fixtures(ILifetimeScope scope)
         {
             Products = new ProductFixtures(scope);
+            Promotions = new PromotionFixtures(scope);
         }
 
         public ProductFixtures Products { get; }
+        public PromotionFixtures Promotions { get; }
     }
 }

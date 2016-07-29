@@ -79,20 +79,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap.cs" />
+    <Compile Include="Controllers\PromotionController.cs" />
     <Compile Include="Controllers\ReceiptController.cs" />
     <Compile Include="Domain\BoughtProduct.cs" />
+    <Compile Include="Domain\Promotion.cs" />
+    <Compile Include="Domain\PromotionItem.cs" />
     <Compile Include="Dtos\Requests\TagsRequestExtension.cs" />
     <Compile Include="Dtos\Responses\ErrorDto.cs" />
+    <Compile Include="Dtos\Responses\MessageDto.cs" />
     <Compile Include="Dtos\Responses\ReceiptDtoExtensions.cs" />
     <Compile Include="PosAppExceptionFilter.cs" />
     <Compile Include="Repositories\IProductRepository.cs" />
     <Compile Include="PosAppModule.cs" />
+    <Compile Include="Repositories\IPromotionRepository.cs" />
+    <Compile Include="Repositories\PromotionRepository.cs" />
     <Compile Include="Services\PosService.cs" />
     <Compile Include="Domain\Product.cs" />
     <Compile Include="Repositories\ProductRespository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Domain\Receipt.cs" />
     <Compile Include="Domain\ReceiptItem.cs" />
+    <Compile Include="Services\PromotionService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

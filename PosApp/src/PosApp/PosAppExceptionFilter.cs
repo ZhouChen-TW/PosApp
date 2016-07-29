@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Filters;
-using PosApp.Dtos;
 using PosApp.Dtos.Responses;
 
 namespace PosApp
@@ -16,6 +15,8 @@ namespace PosApp
         {
             Exception exception = actionExecutedContext?.Exception;
             if (exception == null) return;
+
+            Console.WriteLine(exception.ToString());
 
             var httpException = exception as HttpException;
             if (httpException != null)

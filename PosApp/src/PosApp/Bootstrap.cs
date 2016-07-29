@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Filters;
@@ -51,6 +52,43 @@ namespace PosApp
                 new
                 {
                     httpMethod = new HttpMethodConstraint(HttpMethod.Post)
+                });
+
+            routes.MapHttpRoute(
+                "add promotions",
+                "promotions/{addtype}",
+                new
+                {
+                    controller = "Promotion",
+                    action = "AddPromotions"
+                },
+                new
+                {
+                    httpMethod = new HttpMethodConstraint(HttpMethod.Post)
+                });
+            routes.MapHttpRoute(
+                "list promotions",
+                "promotions/{type}",
+                new
+                {
+                    controller = "Promotion",
+                    action = "ListPromotionsForType"
+                },
+                new
+                {
+                    httpMethod = new HttpMethodConstraint(HttpMethod.Get)
+                });
+            routes.MapHttpRoute(
+                "delete promotions",
+                "promotions/{type}",
+                new
+                {
+                    controller = "Promotion",
+                    action = "DeletePromotions"
+                },
+                new
+                {
+                    httpMethod = new HttpMethodConstraint(HttpMethod.Delete)
                 });
         }
     }

@@ -7,7 +7,7 @@ using PosApp.Test.Common;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace PosApp.Test.Unit
+namespace PosApp.Test.Apis
 {
     public class PosAppFacts : FactBase
     {
@@ -49,7 +49,7 @@ namespace PosApp.Test.Unit
         [Fact]
         public void should_merge_receipt_items()
         {
-            CreateProductFixture(
+            Fixtures.Products.Create(
                 new Product {Barcode = "barcodesame", Name = "I do not care" },
                 new Product {Barcode = "barcodediff", Name = "I do not care" });
             PosService posService = CreatePosService();
@@ -65,9 +65,47 @@ namespace PosApp.Test.Unit
         }
 
         [Fact]
+        public void should_contains_discout_when_product_in_promotions()
+        {
+            Fixtures.Products.Create(
+                new Product {Barcode = "discountbarcode", Name = "I do not care", Price = 3M});
+            Fixtures.Promotions.Create(
+                new Promotion {Barcode = "discountbarcode", Type = "BUY_TWO_GET_ONE"});
+            PosService posService = CreatePosService();
+            var boughtProduct = new BoughtProduct("discountbarcode", 3);
+
+            Receipt receipt = posService.GetReceipt(
+                new[] {boughtProduct});
+
+            Assert.Equal(receipt.PromotionItems.Single(i => i.Product.Barcode.Equals("discountbarcode")).Promoted, 3M);
+            Assert.Equal(receipt.Total, 6M);
+            Assert.Equal(receipt.Promoted, 3M);
+        }
+
+        [Fact]
+        public void should_contains_discout_when_some_product_in_promotions()
+        {
+            Fixtures.Products.Create(
+                new Product { Barcode = "discountbarcode", Name = "I do not care", Price = 3M },
+                new Product { Barcode = "notdiscountbarcode", Name = "I do not care", Price = 1M });
+            Fixtures.Promotions.Create(
+                new Promotion { Barcode = "discountbarcode", Type = "BUY_TWO_GET_ONE" });
+            PosService posService = CreatePosService();
+            var boughtDiscountProduct = new BoughtProduct("discountbarcode", 3);
+            var boughtProduct = new BoughtProduct("notdiscountbarcode", 3);
+
+            Receipt receipt = posService.GetReceipt(
+                new[] { boughtDiscountProduct,boughtProduct });
+
+            Assert.Equal(receipt.PromotionItems.Single(i => i.Product.Barcode.Equals("discountbarcode")).Promoted, 3M);
+            Assert.Equal(receipt.Total, 9M);
+            Assert.Equal(receipt.Promoted, 3M);
+        }
+
+        [Fact]
         public void should_calculate_subtotal()
         {
-            CreateProductFixture(
+            Fixtures.Products.Create(
                 new Product { Barcode = "barcode", Price = 10M, Name = "I do not care"});
             PosService posService = CreatePosService();
 
@@ -81,7 +119,7 @@ namespace PosApp.Test.Unit
         public void should_calculate_total()
         {
             // given
-            CreateProductFixture(
+            Fixtures.Products.Create(
                 new Product { Barcode = "barcode001", Price = 10M, Name = "I do not care" },
                 new Product { Barcode = "barcode002", Price = 20M, Name = "I do not care" });
 
@@ -98,11 +136,6 @@ namespace PosApp.Test.Unit
         {
             var posService = GetScope().Resolve<PosService>();
             return posService;
-        }
-
-        void CreateProductFixture(params Product[] products)
-        {
-            Array.ForEach(products, p => Fixtures.Products.Create(p));
         }
     }
 }

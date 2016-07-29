@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Web.Http;
 using PosApp.Test.DomainFixtures;
+using Xunit.Abstractions;
 
 namespace PosApp.Test.Common
 {
@@ -11,12 +12,14 @@ namespace PosApp.Test.Common
         readonly HttpConfiguration m_httpConfiguration;
         readonly HttpServer m_httpServer;
         readonly List<HttpClient> m_httpClients = new List<HttpClient>();
+        readonly OutputRedirector m_outputRedirector;
 
         protected Fixtures Fixtures { get; }
 
-        public ApiFactBase()
+        public ApiFactBase(ITestOutputHelper outputHelper)
         {
             DatabaseHelper.ResetDatabase();
+            m_outputRedirector = new OutputRedirector(outputHelper);
 
             m_httpConfiguration = new HttpConfiguration();
             var bootstrap = new Bootstrap();
@@ -38,6 +41,7 @@ namespace PosApp.Test.Common
 
         public void Dispose()
         {
+            m_outputRedirector.Dispose();
             m_httpClients.ForEach(c => c.Dispose());
             m_httpServer.Dispose();
             m_httpConfiguration.Dispose();
