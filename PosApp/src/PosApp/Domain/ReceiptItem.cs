@@ -12,5 +12,6 @@
         public Product Product { get; }
         public int Amount { get; }
         public decimal Total { get; }
+        public decimal Promoted { get; set; }
     }
 }

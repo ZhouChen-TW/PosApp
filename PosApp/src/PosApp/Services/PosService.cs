@@ -21,8 +21,10 @@ namespace PosApp.Services
         {
             Validate(boughtProducts);
             IList<ReceiptItem> receiptItems = BuildReceiptItems(boughtProducts);
-            IList<PromotionItem> promotionItems =m_promotionService.BuildPromotionItems(receiptItems);
-            return new Receipt(receiptItems,promotionItems);
+            var receipt= new Receipt(receiptItems);
+            Receipt calculateReceipt = m_promotionService.BuildAllPromotions(receipt);
+
+            return calculateReceipt;
         }
 
         IList<ReceiptItem> BuildReceiptItems(IList<BoughtProduct> boughtProducts)

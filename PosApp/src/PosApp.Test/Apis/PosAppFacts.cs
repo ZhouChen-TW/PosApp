@@ -77,7 +77,7 @@ namespace PosApp.Test.Apis
             Receipt receipt = posService.GetReceipt(
                 new[] {boughtProduct});
 
-            Assert.Equal(receipt.PromotionItems.Single(i => i.Product.Barcode.Equals("discountbarcode")).Promoted, 3M);
+            Assert.Equal(receipt.ReceiptItems.Single(i => i.Product.Barcode.Equals("discountbarcode")).Promoted, 3M);
             Assert.Equal(receipt.Total, 6M);
             Assert.Equal(receipt.Promoted, 3M);
         }
@@ -97,7 +97,7 @@ namespace PosApp.Test.Apis
             Receipt receipt = posService.GetReceipt(
                 new[] { boughtDiscountProduct,boughtProduct });
 
-            Assert.Equal(receipt.PromotionItems.Single(i => i.Product.Barcode.Equals("discountbarcode")).Promoted, 3M);
+            Assert.Equal(receipt.ReceiptItems.Single(i => i.Product.Barcode.Equals("discountbarcode")).Promoted, 3M);
             Assert.Equal(receipt.Total, 9M);
             Assert.Equal(receipt.Promoted, 3M);
         }
@@ -131,6 +131,151 @@ namespace PosApp.Test.Apis
 
             Assert.Equal(80M, receipt.Total);
         }
+
+        [Fact]
+        public void should_not_cut_half_when_total_less_than_one_hundred_and_only_one_type()
+        {
+            Fixtures.Products.Create(new Product
+            {
+                Barcode = "I do not care",
+                Id = Guid.NewGuid(),
+                Name = "I do not care",
+                Price = 80M
+            });
+
+            Fixtures.Promotions.Create(new Promotion
+            {
+                Barcode = "I do not care",
+                Id = Guid.NewGuid(),
+                Type = "BUY_HUNDRED_GET_HALF"
+            });
+
+            PosService posService = CreatePosService();
+
+            Receipt receipt = posService.GetReceipt(
+                new[] { new BoughtProduct("I do not care", 1) });
+
+            Assert.Equal(80M, receipt.Total);
+            Assert.Equal(0M, receipt.Promoted);
+        }
+
+        [Fact]
+        public void should_cut_half_per_hundred_when_total_more_than_one_hundred_and_only_one_type()
+        {
+            Fixtures.Products.Create(new Product
+            {
+                Barcode = "I do not care",
+                Id = Guid.NewGuid(),
+                Name = "I do not care",
+                Price = 100M
+            });
+
+            Fixtures.Promotions.Create(new Promotion
+            {
+                Barcode = "I do not care",
+                Id = Guid.NewGuid(),
+                Type = "BUY_HUNDRED_GET_HALF"
+            });
+
+            PosService posService = CreatePosService();
+
+            Receipt receipt = posService.GetReceipt(
+                new[] { new BoughtProduct("I do not care", 1) });
+
+            Assert.Equal(50M,receipt.Total);
+            Assert.Equal(50M,receipt.Promoted);
+        }
+
+        [Fact]
+        public void should_not_cut_half_per_hundred_when_discount_total_less_than_one_hundred_and_two_type()
+        {
+            Fixtures.Products.Create(new Product
+            {
+                Barcode = "I do not care type one",
+                Id = Guid.NewGuid(),
+                Name = "I do not care name one",
+                Price = 40M
+            },
+            new Product
+            {
+                Barcode = "I do not care type two",
+                Id = Guid.NewGuid(),
+                Name = "I do not care name two",
+                Price = 20M
+            });
+
+            Fixtures.Promotions.Create(new Promotion
+            {
+                Barcode = "I do not care type two",
+                Id = Guid.NewGuid(),
+                Type = "BUY_HUNDRED_GET_HALF"
+            },
+            new Promotion
+            {
+                Barcode = "I do not care type two",
+                Id = Guid.NewGuid(),
+                Type = "BUY_TWO_GET_ONE"
+            },new Promotion
+            {
+                Barcode = "I do not care type one",
+                Id = Guid.NewGuid(),
+                Type = "BUY_HUNDRED_GET_HALF"
+            });
+
+            PosService posService = CreatePosService();
+
+            Receipt receipt = posService.GetReceipt(
+                new[] { new BoughtProduct("I do not care type one", 1),new BoughtProduct("I do not care type two",3)});
+
+            Assert.Equal(30M, receipt.Total);
+            Assert.Equal(70M, receipt.Promoted);
+        }
+
+        [Fact]
+        public void should_not_cut_half_per_hundred_when_discount_total_more_than_one_hundred_and_two_type()
+        {
+            Fixtures.Products.Create(new Product
+            {
+                Barcode = "I do not care type one",
+                Id = Guid.NewGuid(),
+                Name = "I do not care name one",
+                Price = 40M
+            },
+            new Product
+            {
+                Barcode = "I do not care type two",
+                Id = Guid.NewGuid(),
+                Name = "I do not care name two",
+                Price = 40M
+            });
+
+            Fixtures.Promotions.Create(new Promotion
+            {
+                Barcode = "I do not care type two",
+                Id = Guid.NewGuid(),
+                Type = "BUY_HUNDRED_GET_HALF"
+            },
+            new Promotion
+            {
+                Barcode = "I do not care type two",
+                Id = Guid.NewGuid(),
+                Type = "BUY_TWO_GET_ONE"
+            }, new Promotion
+            {
+                Barcode = "I do not care type one",
+                Id = Guid.NewGuid(),
+                Type = "BUY_HUNDRED_GET_HALF"
+            });
+
+            PosService posService = CreatePosService();
+
+            Receipt receipt = posService.GetReceipt(
+                new[] { new BoughtProduct("I do not care type one", 1), new BoughtProduct("I do not care type two", 3) });
+
+            Assert.Equal(70M, receipt.Total);
+            Assert.Equal(90M, receipt.Promoted);
+        }
+
 
         PosService CreatePosService()
         {

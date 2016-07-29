@@ -8,6 +8,7 @@ namespace PosApp.Repositories
         IList<Promotion> GetByType(string type);
         IList<Promotion> GetByBarcode(string[] barcodes); 
         int CountByType(string type);
+        string[] GetAllTypes();
         void Save(IList<Promotion> promotions);
         void Delete(IList<Promotion> promotions);
     }

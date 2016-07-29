@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Autofac;
 using PosApp.Domain;
@@ -26,10 +27,10 @@ namespace PosApp.Test.Apis
                 Price = 3M
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
-
             string type = "BUY_TWO_GET_ONE";
             string[] barcodes = {"barcode-not-exist"};
+
+            PromotionService promotionService = CreatePromotionSerivice();
 
             Assert.Throws<ArgumentException>(() => promotionService.CreatePromotionsForType(type, barcodes));
         }
@@ -45,10 +46,10 @@ namespace PosApp.Test.Apis
                 Price = 3M
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
-
             string type = "BUY_TWO_GET_ONE";
             string[] barcodes = { "barcode-not-exist","barcode"};
+
+            PromotionService promotionService = CreatePromotionSerivice();
 
             Assert.Throws<ArgumentException>(() => promotionService.CreatePromotionsForType(type, barcodes));
         }
@@ -71,11 +72,10 @@ namespace PosApp.Test.Apis
                 Type = ""
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
-
             string type = "BUY_TWO_GET_ONE";
             string[] barcodes = { "barcode"};
 
+            PromotionService promotionService = CreatePromotionSerivice();
             promotionService.CreatePromotionsForType(type,barcodes);
             IList<Promotion> promotions = promotionService.GetAllPromotionsForType(type);
 
@@ -102,11 +102,10 @@ namespace PosApp.Test.Apis
                 Type = "BUY_TWO_GET_ONE"
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
-
             string type = "BUY_TWO_GET_ONE";
             string[] barcodes = { "barcode" };
 
+            PromotionService promotionService = CreatePromotionSerivice();
             promotionService.CreatePromotionsForType(type, barcodes);
             IList<Promotion> promotions = promotionService.GetAllPromotionsForType(type);
 
@@ -123,9 +122,9 @@ namespace PosApp.Test.Apis
                 Type = "BUY_TWO_GET_ONE"
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
             string type = "BUY_TWO_GET_ONE";
 
+            PromotionService promotionService = CreatePromotionSerivice();
             IList<Promotion> promotions = promotionService.GetAllPromotionsForType(type);
 
             Assert.Equal(1,promotions.Count);
@@ -151,11 +150,10 @@ namespace PosApp.Test.Apis
                 Type = "BUY_TWO_GET_ONE"
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
-
             string type = "BUY_TWO_GET_ONE";
             string[] barcodes = { "barcode" };
 
+            PromotionService promotionService = CreatePromotionSerivice();
             promotionService.DeletePromotionsForType(type, barcodes);
             IList<Promotion> allPromotionsForType = promotionService.GetAllPromotionsForType("BUY_TWO_GET_ONE");
 
@@ -180,11 +178,10 @@ namespace PosApp.Test.Apis
                 Type = "BUY_TWO_GET_ONE"
             });
 
-            PromotionService promotionService = CreatePromotionSerivice();
-
             string type = "BUY_TWO_GET_ONE";
             string[] barcodes = { "barcode","barcode-not-exist"};
 
+            PromotionService promotionService = CreatePromotionSerivice();
             promotionService.DeletePromotionsForType(type, barcodes);
             IList<Promotion> allPromotionsForType = promotionService.GetAllPromotionsForType("BUY_TWO_GET_ONE");
 

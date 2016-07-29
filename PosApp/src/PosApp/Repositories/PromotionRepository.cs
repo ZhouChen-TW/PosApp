@@ -31,6 +31,11 @@ namespace PosApp.Repositories
             return m_session.Query<Promotion>().Count(p => p.Type.Equals(type));
         }
 
+        public string[] GetAllTypes()
+        {
+            return m_session.Query<Promotion>().Select(p => p.Type).Distinct().ToArray();
+        }
+
         public void Save(IList<Promotion> promotions)
         {
             promotions.ForEach(p=>m_session.Save(p));

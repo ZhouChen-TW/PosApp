@@ -93,6 +93,9 @@
     <Compile Include="PosAppModule.cs" />
     <Compile Include="Repositories\IPromotionRepository.cs" />
     <Compile Include="Repositories\PromotionRepository.cs" />
+    <Compile Include="Services\BuyTwoGetOne.cs" />
+    <Compile Include="Services\Iml\BuyHundredCutHalf.cs" />
+    <Compile Include="Services\Iml\ICalculateReceipt.cs" />
     <Compile Include="Services\PosService.cs" />
     <Compile Include="Domain\Product.cs" />
     <Compile Include="Repositories\ProductRespository.cs" />
